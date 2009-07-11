@@ -149,8 +149,12 @@ HELP
           if command[0] == ?!
             exec_tasks(command[1..-1].split)
           else
-            servers = connect(configuration.current_task)
-            exec_command(command, servers)
+						begin
+							servers = connect(configuration.current_task)
+							exec_command(command, servers)
+						rescue  => error
+							warn "unknown error: #{error.message}"
+						end
           end
         end
       ensure
@@ -167,6 +171,8 @@ HELP
         end
       rescue Capistrano::NoMatchingServersError, Capistrano::NoSuchTaskError => error
         warn "error: #{error.message}"
+			rescue  => error
+				warn "unknown error: #{error.message}"
       end
 
       # Execute a command on the given list of servers.
