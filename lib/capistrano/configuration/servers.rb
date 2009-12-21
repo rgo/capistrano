@@ -49,7 +49,7 @@ module Capistrano
           end
         else
 					roles = role_list_from(ENV['ROLES'] || options[:roles] || self.roles.keys)
-					roles = roles & Array(options[:roles]) if preserve_roles && !options[:roles].nil?
+					roles = roles & Array(options[:roles]) if preserve_roles 
 
           only   = options[:only] || {}
           except = options[:except] || {}
