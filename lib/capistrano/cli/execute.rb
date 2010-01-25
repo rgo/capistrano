@@ -25,6 +25,7 @@ module Capistrano
         config.debug = options[:debug]
         config.dry_run = options[:dry_run]
         config.logger.level = options[:verbose]
+        config.match_all = options[:match_all]
 
         set_pre_vars(config)
         load_recipes(config)

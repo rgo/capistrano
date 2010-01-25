@@ -24,6 +24,18 @@ class CLIOptionsTest < Test::Unit::TestCase
     assert_raises(ExitException) { @cli.parse_options! }
   end
   
+  def test_parse_options_with_A_should_set_match_all_option
+    @cli.args << "-A"
+    @cli.parse_options!
+    assert @cli.options[:match_all]
+  end
+
+  def test_parse_options_with_match_all_should_set_match_all_option
+    @cli.args << "--match-all"
+    @cli.parse_options!
+    assert @cli.options[:match_all]
+  end
+
   def test_parse_options_with_d_should_set_debug_option
     @cli.args << "-d"
     @cli.parse_options!

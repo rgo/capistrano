@@ -28,6 +28,10 @@ module Capistrano
         @option_parser ||= OptionParser.new do |opts|
           opts.banner = "Usage: #{File.basename($0)} [options] action ..."
 
+          opts.on("-A", "--match-all",
+            "A server must match ALL roles"
+          ) { |value| options[:match_all] = true }
+
           opts.on("-d", "--debug",
             "Prompts before each remote command execution."
           ) { |value| options[:debug] = true }

@@ -52,7 +52,15 @@ module Capistrano
           only   = options[:only] || {}
           except = options[:except] || {}
           
-          servers = roles.inject([]) { |list, role| list.concat(self.roles[role]) }
+          if self.match_all
+            servers = roles.inject([]) { |list, role|
+              list.concat(self.roles[role]) if list.empty?
+              list & self.roles[role]
+            }
+          else
+            servers = roles.inject([]) { |list, role| list.concat(self.roles[role]) }
+          end
+
           servers = servers.select { |server| only.all? { |key,value| server.options[key] == value } }
           servers = servers.reject { |server| except.any? { |key,value| server.options[key] == value } }
 

@@ -5,9 +5,11 @@ require 'capistrano/configuration/servers'
 class ConfigurationServersTest < Test::Unit::TestCase
   class MockConfig
     attr_reader :roles
+    attr_accessor :match_all
 
     def initialize
       @roles = {}
+      @match_all = false
     end
 
     include Capistrano::Configuration::Servers
@@ -125,5 +127,11 @@ class ConfigurationServersTest < Test::Unit::TestCase
   def test_find_servers_with_lambda_for_roles_should_be_evaluated
     assert_equal %w(app1 app2 app3), @config.find_servers(:roles => lambda { :app }).map { |s| s.host }.sort
     assert_equal %w(app2 file), @config.find_servers(:roles => lambda { [:report, :file] }).map { |s| s.host }.sort
+  end
+
+  def test_find_servers_with_match_all_option_should_find_servers_present_in_all_roles
+    @config.match_all = true
+    assert_equal %w(app2), @config.find_servers(:roles => lambda { [ :app, :report ] }).map { |s| s.host }.sort
+    assert_equal [], @config.find_servers(:roles => lambda { [ :app, :web, :report, :file ] }).map { |s| s.host }.sort
   end
 end
