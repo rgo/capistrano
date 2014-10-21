@@ -1,14 +1,12 @@
-source "http://rubygems.org"
+source 'https://rubygems.org'
 
 # Specify your gem's dependencies in capistrano.gemspec
 gemspec
 
-#
-# Development Dependencies from the Gemfile 
-# are merged here.
-#
-group :development do
-  gem 'rake', '0.8.7'
-  gem 'ruby-debug',   :platform => :mri_18
-  gem 'ruby-debug19', :platform => :mri_19
+group :cucumber do
+  gem 'cucumber'
+end
+
+platforms :rbx do
+  gem 'rubysl', '~> 2.0'
 end
