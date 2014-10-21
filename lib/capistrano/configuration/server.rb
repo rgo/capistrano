@@ -11,11 +11,13 @@ module Capistrano
 
       def add_roles(roles)
         Array(roles).each { |role| add_role(role) }
+        self
       end
       alias roles= add_roles
 
       def add_role(role)
         roles.add role.to_sym
+        self
       end
 
       def has_role?(role)
@@ -40,11 +42,9 @@ module Capistrano
         @properties ||= Properties.new
       end
 
-      def netssh_options_with_options
-        @netssh_options ||= netssh_options_without_options.merge( fetch(:ssh_options) || {} )
+      def netssh_options
+        @netssh_options ||= super.merge( fetch(:ssh_options) || {} )
       end
-      alias_method :netssh_options_without_options, :netssh_options
-      alias_method :netssh_options, :netssh_options_with_options
 
       def roles_array
         roles.to_a
@@ -71,7 +71,16 @@ module Capistrano
         end
 
         def set(key, value)
-          @properties[key] = value
+          pval = @properties[key]
+          if pval.is_a? Hash and value.is_a? Hash
+            pval.merge!(value)
+          elsif pval.is_a? Set and value.is_a? Set
+            pval.merge(value)
+          elsif pval.is_a? Array and value.is_a? Array
+            pval.concat value
+          else
+            @properties[key] = value
+          end
         end
 
         def fetch(key)

@@ -14,12 +14,12 @@ describe Capistrano::Application do
   end
 
   it "displays documentation URL as help banner" do
-    help_output.lines.first.should match(/capistranorb.com/)
+    expect(help_output.lines.first).to match(/capistranorb.com/)
   end
 
   %w(quiet silent verbose).each do |switch|
     it "doesn't include --#{switch} in help" do
-      help_output.should_not match(/--#{switch}/)
+      expect(help_output).not_to match(/--#{switch}/)
     end
   end
 
@@ -27,10 +27,18 @@ describe Capistrano::Application do
     out, _ = capture_io do
       flags '--version', '-V'
     end
-    out.should match(/\bCapistrano Version\b/)
-    out.should match(/\b#{Capistrano::VERSION}\b/)
-    out.should match(/\bRake Version\b/)
-    out.should match(/\b#{RAKEVERSION}\b/)
+    expect(out).to match(/\bCapistrano Version\b/)
+    expect(out).to match(/\b#{Capistrano::VERSION}\b/)
+    expect(out).to match(/\bRake Version\b/)
+    expect(out).to match(/\b#{RAKEVERSION}\b/)
+  end
+
+  it "overrides the rake method, and sets the sshkit_backend to SSHKit::Backend::Printer" do
+    out, _ = capture_io do
+      flags '--dry-run', '-n'
+    end
+    sshkit_backend = Capistrano::Configuration.fetch(:sshkit_backend)
+    expect(sshkit_backend).to eq(SSHKit::Backend::Printer)
   end
 
   def flags(*sets)

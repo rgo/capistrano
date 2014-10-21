@@ -65,5 +65,15 @@ module Capistrano
         subject.release
       end
     end
+
+    describe "#fetch_revision" do
+      it "should run fetch revision" do
+        context.expects(:repo_path).returns(:path)
+
+        context.expects(:capture).with(:svnversion, :path)
+
+        subject.fetch_revision
+      end
+    end
   end
 end
